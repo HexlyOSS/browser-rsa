@@ -1,0 +1,44 @@
+<html>
+  <head>
+    <script src="jwks-rsa.js"></script>
+    <script>
+
+      // a dummy public/private key, generated with `JwksEncryptor.generateKey({b: 1024}); key.export('private'|'public')`
+      const dummy = {
+        private: '-----BEGIN RSA PRIVATE KEY-----\nMIICXAIBAAKBgQDg42rU74pZgGwgMYI4rCPNAe8JW6y30S6g49mtVKjoajc9igJk\nG2oLPF+eOIoZjONZqXS6Ie+2k8UpKUF9oUEZtVKXZZikVdsJRdGEZG5Ki6oXgwO8\nJ0/bZ6cGLgsLkVlgITyvRFAoXLrqpnNJ/nfIFcPrmCD05Ir26hQO+jxpuwIDAQAB\nAoGAcunCHSyJtVI57fleYTcU1By42D9P8l2hRfUntboc1SXxNDDhJ+YaOcOP2Hlr\nl8K2KYq9ap8Mrm6zwGSkYl2TtWnopjEGuUTaYlMK0j7vvtRmXhIyMCWbs4jM+S6f\nucT4CP1JD4IP0sHCbS0mBtyD+kknosYAFbPvCm++DS/fSIECQQD4D+Q8vKkz/KS9\nm5YTnbJFEtA8/7wD3mE4bc4JJtaE8DhwQjkgPj2cBvvkOI6n0KAfJiw+lges3yIa\nm5LHz/AXAkEA6BWwJm/HLu2gfB+hLynmZtd5O9yZF30G7oQug9wxV90fdKmjMG28\noPv7mtIAbPQJ5XpO1yK/zw7LZtQe42/V/QJBALOXFb9fOwTXORHIzYtgFQtrBnXT\nE/SdEDfBT3RSuOY/4Cxt1Vvhk8sdR0pAJA+cvAAxK8EX73CZjuBCl66vfXsCQD6w\n9Rc85HoZuFsvFBQwZktrcxUnfrcoj8HINORri2ynj4Ks/CbtzaFSz+E/Ttwfg7jY\nNAnLGjLtVSZesEVRhWUCQBhQ28chvruEzA6JqraWcMYpcKzH6JJhNXGeue2Nz+0g\n4dYnVmVwIFefSnD1czt8snidYvlSZzQVYxUE/tmrsVA=\n-----END RSA PRIVATE KEY-----\n',
+        public: '-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDg42rU74pZgGwgMYI4rCPNAe8J\nW6y30S6g49mtVKjoajc9igJkG2oLPF+eOIoZjONZqXS6Ie+2k8UpKUF9oUEZtVKX\nZZikVdsJRdGEZG5Ki6oXgwO8J0/bZ6cGLgsLkVlgITyvRFAoXLrqpnNJ/nfIFcPr\nmCD05Ir26hQO+jxpuwIDAQAB\n-----END PUBLIC KEY-----\n'
+      }
+      const encWithPrivate = JwksEncryptor.Encryptor.fromPem(dummy.private)
+
+      /* example 1: if you just want to try it locally in the browser, uncomment the next two lines */
+      const encWithPublic = JwksEncryptor.Encryptor.fromPem(dummy.public)
+      demoEncryption(encWithPublic, encWithPrivate)
+
+      /* Example 2: If you have a JWKS endpoint on 4011 with a JWK kid of 'localdev' (and a property of 'rsaPublicKey') you're golden */
+      // const e = new JwksEncryptor()
+      // e.refresh('http://localhost:4011/.well-known/jwks.json')
+      //   .then(() => demoEncryption(e.encryptorByKid('localdev'), encWithPrivate) )
+
+
+      function demoEncryption(encWithPublic, encWithPrivate) {
+        const secretMessage = 'the password is rosebud'
+        const encrypted = encWithPublic.encrypt(secretMessage)
+        console.log({ encrypted })
+
+        try {
+          const decrypted = encWithPublic.decrypt(encrypted)
+          console.warn('The public key was able to decrypt, meaning your JWKS implementation is leaking THE PRIVATE KEY', { decrypted })
+        }catch(err){
+          console.log('Decryption failed like it should have :) ', err)
+        }
+
+        const decrypted = encWithPrivate.decrypt(encrypted).toString()
+        console.log({ decrypted })
+
+        alert('success! check your js console')
+      }
+
+    </script>
+  </head>
+  <body> sup </body>
+</html>

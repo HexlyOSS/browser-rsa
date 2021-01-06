@@ -1,0 +1,17 @@
+{
+  "name": "@hexlyoss/browser-rsa",
+  "version": "1.0.0",
+  "description": "A simple utility for leveraging JWKS keys for RSA encryption in the browser",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon -i jwks-rsa.js --exec npx browserify main.js -o jwks-rsa.js"
+  },
+  "dependencies": {
+    "node-rsa": "1.1.1"
+  },
+  "devDependencies": {
+    "browserify": "^17.0.0"
+  },
+  "author": "",
+  "license": "ISC"
+}
