@@ -4,13 +4,15 @@
   "description": "A simple utility for leveraging JWKS keys for RSA encryption in the browser",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon -i jwks-rsa.js --exec npx browserify main.js -o jwks-rsa.js"
+    "dev": "nodemon -i jwks-rsa.js --exec npx browserify main.js -o jwks-rsa.js",
+    "build": "browserify main.js -o jwks-rsa.js"
   },
   "dependencies": {
     "node-rsa": "1.1.1"
   },
   "devDependencies": {
-    "browserify": "^17.0.0"
+    "browserify": "^17.0.0",
+    "temp": "^0.9.4"
   },
   "author": "",
   "license": "ISC"
